@@ -6,7 +6,57 @@ from scipy.optimize import minimize
 
 __all__ = ['MultinomialLikelihood', 'PoissonLikelihood', 'PoissonPosterior',
            'GaussianLikelihood', 'MultivariateGaussianLikelihood',
-           'MultivariateGaussianPosterior', 'UniformPrior', 'GaussianPrior']
+           'MultivariateGaussianPosterior', 'UniformPrior', 'GaussianPrior',
+           'Uniform']
+
+
+class PDF(ABC):
+    """Generic class for Probability Density Functions (PDF)."""
+
+    def __init__(self, name):
+        self.name = name
+
+    def __mul__(self, other):
+        return CompositePDF([self, other])
+
+    def lnlike(self):
+        """Returns the log-likelihood."""
+        pass
+
+    def max(self):
+        """Returns the maximum."""
+        pass
+
+    def mean(self):
+        """Returns the mean."""
+        pass
+
+    def percentiles(self):
+        """Returns the percentiles."""
+        pass
+
+
+class CompositePDF(PDF):
+
+    def __init__(self, components=[]):
+        self.components = components
+
+    def lnlike(self, x):
+        return np.sum([pdf.lnlike(x) for pdf in self.components])
+
+
+class Uniform(PDF):
+
+    def __init__(self, lb=0, ub=1):
+        self.lb = lb
+        self.ub = ub
+        super().__init__("uniform")
+
+    def lnlike(self, x):
+        if not (self.lb <= x < self.ub):
+            return -np.inf
+        return np.log(1 / (self.ub - self.lb))
+
 
 
 class LossFunction(ABC):
