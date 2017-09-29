@@ -14,6 +14,7 @@ __pycache__
 */cython_version.py
 htmlcov
 .coverage
+coverage.xml
 MANIFEST
 .ipynb_checkpoints
 benchmarks/_results
@@ -36,6 +37,7 @@ docs/_build
 dist
 build
 eggs
+.eggs
 parts
 bin
 var
@@ -52,3 +54,5 @@ distribute-*.tar.gz
 
 # Mac OSX
 .DS_Store
+
+sandbox/
